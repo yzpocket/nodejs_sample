@@ -2,32 +2,31 @@ const express = require('express')
 const app = express()
 const port = 3000
 
-//홈 페이지에서 Hello World!로 응답:
+//Root URL('/') 경로에 대한 Get 요청
 app.get('/', function (req, res) {
-  res.send('Hello World!');
+  res.send('This is response test for MAIN PAGE');
 })
 
-//화살표함수를 사용하는 동일한 Get 요청
-app.get('/', (req, res) => {
-    res.send('Hello World!')
+//특정 URL 경로에 대한 Get 요청 - 1
+app.get('/boards', function (req, res) {
+  res.send('This is response test for BOARD PAGE');
 })
 
-//애플리케이션의 홈 페이지인 루트 라우트(/)에서 POST 요청에 응답:
-app.post('/', function (req, res) {
-  res.send('Got a POST request');
+//특정 URL 경로에 대한 Get 요청 - 2
+app.get('/users', function (req, res) {
+  res.send('This is response test for USER PAGE');
 })
 
-//user 라우트에 대한 PUT 요청에 응답:
-app.put('/user', function (req, res) {
-  res.send('Got a PUT request at /user');
+//특정 URL 경로에 대한 Get 요청의 JSON 형식 응답 - 1
+app.get('/api/boards/1', function (req, res) {
+  res.send('{"id": 1, "title": "Title of the novel", "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum ha.."}');
 })
 
-//user 라우트에 대한 DELETE 요청에 응답:
-app.delete('/user', function (req, res) {
-  res.send('Got a DELETE request at /user');
+//특정 URL 경로에 대한 Get 요청의 JSON 형식 응답 - 2
+app.get('/api/users/1', function (req, res) {
+  res.send('{"id": 1, "username": "Fred", "role": "USER"}');
 })
 
-
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-})
+app.listen (port, () =>
+  console. log(`Example app listening on port ${port}`)
+)
