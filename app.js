@@ -1,20 +1,24 @@
 const express = require('express')
+const ejs = require('ejs')
 const app = express()
 const port = 3000
 
+app.set('view engine', 'ejs');
+app.set('views', './views')
+
 //Root URL('/') 경로에 대한 Get 요청
 app.get('/', function (req, res) {
-  res.send('This is response test for MAIN PAGE');
+  res.render('index');
 })
 
 //특정 URL 경로에 대한 Get 요청 - 1
 app.get('/boards', function (req, res) {
-  res.send('This is response test for BOARD PAGE');
+  res.render('boards');
 })
 
 //특정 URL 경로에 대한 Get 요청 - 2
 app.get('/users', function (req, res) {
-  res.send('This is response test for USER PAGE');
+  res.render('users');
 })
 
 //특정 URL 경로에 대한 Get 요청의 JSON 형식 응답 - 1
@@ -28,5 +32,5 @@ app.get('/api/users/1', function (req, res) {
 })
 
 app.listen (port, () =>
-  console. log(`Example app listening on port ${port}`)
+  console. log(`Example app listening on port ${port},`)
 )
