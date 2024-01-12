@@ -22,6 +22,14 @@ app.get('/users', function (req, res) {
   res.render('users');
 })
 
+app.get('/visit', function (req, res) {
+  res.render('visit');
+})
+
+app.get('/contact', function (req, res) {
+  res.render('contact');
+})
+
 app.get('/api/boards/1', function (req, res) {
   res.send('{"id": 1, "title": "Title of the novel", "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum ha.."}');
 })
