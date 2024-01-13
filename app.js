@@ -1,6 +1,6 @@
 const express = require('express')
 const ejs = require('ejs')
-var bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
 
 const app = express()
 const port = 3000
@@ -42,7 +42,7 @@ app.post('/api/contact', function (req, res) {
   const email = req.body.email;
   const memo = req.body.memo;
 
-  var data = `${name} ${phone} ${email} ${memo}`
+  const data = `${name} ${phone} ${email} ${memo}`
 
   res.send(data);
 })
