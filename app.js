@@ -1,10 +1,16 @@
 const express = require('express')
 const ejs = require('ejs')
+var bodyParser = require('body-parser')
+
 const app = express()
 const port = 3000
 
 app.set('view engine', 'ejs');
 app.set('views', './views')
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
 
 app.get('/', function (req, res) {
   res.render('index');
@@ -28,6 +34,17 @@ app.get('/visit', function (req, res) {
 
 app.get('/contact', function (req, res) {
   res.render('contact');
+})
+
+app.post('/api/contact', function (req, res) {
+  const name = req.body.name;
+  const phone = req.body.phone;
+  const email = req.body.email;
+  const memo = req.body.memo;
+
+  var data = `${name} ${phone} ${email} ${memo}`
+
+  res.send(data);
 })
 
 app.get('/api/boards/1', function (req, res) {
