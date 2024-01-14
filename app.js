@@ -14,7 +14,7 @@ app.set('views', './views')
 app.use(bodyParser.urlencoded({ extended: false }))
 
 // MySQL connection
-const connectionPool = mysql.createPool({
+const connection = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PW,
@@ -23,16 +23,6 @@ const connectionPool = mysql.createPool({
   insecureAuth: true,
 });
 
-// MySQL connection check
-connectionPool.getConnection((err, connection) => {
-  if (err) {
-    console.error('MySQL에 연결 중 에러 발생:', err);
-  } else {
-    console.log('MySQL에 연결되었습니다.');
-    // 사용이 끝난 경우 연결을 풀에 반환합니다.
-    connection.release();
-  }
-});
 
 app.get('/', function (req, res) {
   res.render('index');
@@ -65,9 +55,19 @@ app.post('/api/contact', function (req, res) {
   const memo = req.body.memo;
 
   const data = `${name} ${phone} ${email} ${memo}`
+  const query = `INSERT INTO contact(name, phone, email, memo, create_at, modify_at)
+                 VALUES ('${name}','${phone}','${email}','${memo}',NOW(), NOW())`;
 
-  res.send(data);
-})
+  connection.query(query, function(err, result) {
+    if (err) {
+      console.error('데이터 삽입 중 에러 발생:', err);
+      res.status(500).send('내부 서버 오류');
+    } else {
+      console.log('데이터가 삽입되었습니다.');
+      res.send("<script>alert('문의사항이 등록되었습니다.'); location.href='/'</script>");
+    }
+  });
+});
 
 app.get('/api/boards/1', function (req, res) {
   res.send('{"id": 1, "title": "Title of the novel", "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum ha.."}');
