@@ -1,2 +1,3 @@
 node_modules
 package-lock.json
+#.env 도 추적 제외 필요
