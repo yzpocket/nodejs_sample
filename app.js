@@ -97,6 +97,63 @@ app.post('/api/contact', function (req, res) {
   });
 });
 
+app.get('/contactList', (req, res) => {
+  // 커넥션 풀에서 커넥션을 얻어옵니다.
+  connectionPool.getConnection((err, connection) => {
+    if (err) {
+      console.error('MySQL 커넥션 얻는 중 에러 발생:', err);
+      res.status(500).send('내부 서버 오류');
+    } else {
+      const selectQuery = `
+        select * from contact order by id desc
+      `;
+
+      // 얻어온 커넥션을 사용하여 쿼리를 실행합니다.
+      connection.query(selectQuery, function (queryErr, result) {
+        // 쿼리 실행이 끝나면 반드시 커넥션을 풀에 반환합니다.
+        connection.release();
+
+        if (queryErr) {
+          console.error('데이터 조회 중 에러 발생:', queryErr);
+          res.status(500).send('내부 서버 오류');
+        } else {
+          console.log('데이터가 조회되었습니다.');
+          res.render('contactList', {lists:result});
+        }
+      });
+    }
+  });
+});
+
+app.get('/contactDelete', (req, res) => {
+  const id = req.query.id
+  // 커넥션 풀에서 커넥션을 얻어옵니다.
+  connectionPool.getConnection((err, connection) => {
+    if (err) {
+      console.error('MySQL 커넥션 얻는 중 에러 발생:', err);
+      res.status(500).send('내부 서버 오류');
+    } else {
+      const deleteQuery = `
+        delete from contact where id='${id}'
+      `;
+
+      // 얻어온 커넥션을 사용하여 쿼리를 실행합니다.
+      connection.query(deleteQuery, function (queryErr, result) {
+        // 쿼리 실행이 끝나면 반드시 커넥션을 풀에 반환합니다.
+        connection.release();
+
+        if (queryErr) {
+          console.error('데이터 삭제 중 에러 발생:', queryErr);
+          res.status(500).send('내부 서버 오류');
+        } else {
+          console.log('데이터가 삭제되었습니다.');
+          res.send("<script>alert('문의사항이 삭제되었습니다.'); location.href='/contactList'</script>");
+        }
+      });
+    }
+  });
+});
+
 app.get('/api/boards/1', function (req, res) {
   res.send('{"id": 1, "title": "Title of the novel", "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum ha.."}');
 })
