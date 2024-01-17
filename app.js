@@ -126,7 +126,7 @@ app.get('/contactList', (req, res) => {
   });
 });
 
-app.post('/api/contactDelete/:id', function (req, res) {
+app.delete('/api/contactDelete/:id', function (req, res) {
   const id = req.params.id;
   // 커넥션 풀에서 커넥션을 얻어옵니다.
   connectionPool.getConnection((err, connection) => {
@@ -135,7 +135,7 @@ app.post('/api/contactDelete/:id', function (req, res) {
       res.status(500).send('내부 서버 오류');
     } else {
       const deleteQuery = `
-        delete from contact where id='${id}'
+        DELETE FROM contact WHERE id='${id}'
       `;
 
       // 얻어온 커넥션을 사용하여 쿼리를 실행합니다.
@@ -155,7 +155,7 @@ app.post('/api/contactDelete/:id', function (req, res) {
   });
 });
 
-app.post('/api/contactUpdate/:id', function (req, res) {
+app.put('/api/contactUpdate/:id', function (req, res) {
   const id = req.params.id;
   const status = "done";
 
