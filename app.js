@@ -118,6 +118,7 @@ app.get('/contactList', (req, res) => {
           res.status(500).send('내부 서버 오류');
         } else {
           console.log('데이터가 조회되었습니다.');
+          // console.log(result);
           res.render('contactList', {lists:result});
         }
       });
@@ -125,8 +126,8 @@ app.get('/contactList', (req, res) => {
   });
 });
 
-app.get('/contactDelete', (req, res) => {
-  const id = req.query.id
+app.post('/api/contactDelete/:id', function (req, res) {
+  const id = req.params.id;
   // 커넥션 풀에서 커넥션을 얻어옵니다.
   connectionPool.getConnection((err, connection) => {
     if (err) {
@@ -148,6 +149,37 @@ app.get('/contactDelete', (req, res) => {
         } else {
           console.log('데이터가 삭제되었습니다.');
           res.send("<script>alert('문의사항이 삭제되었습니다.'); location.href='/contactList'</script>");
+        }
+      });
+    }
+  });
+});
+
+app.post('/api/contactUpdate/:id', function (req, res) {
+  const id = req.params.id;
+  const status = "done";
+
+  // 커넥션 풀에서 커넥션을 얻어옵니다.
+  connectionPool.getConnection((err, connection) => {
+    if (err) {
+      console.error('MySQL 커넥션 얻는 중 에러 발생:', err);
+      res.status(500).send('내부 서버 오류');
+    } else {
+      const updateQuery = `
+        UPDATE contact SET status = '${status}' WHERE id = '${id}';
+      `;
+
+      // 얻어온 커넥션을 사용하여 쿼리를 실행합니다.
+      connection.query(updateQuery, function (queryErr, result) {
+        // 쿼리 실행이 끝나면 반드시 커넥션을 풀에 반환합니다.
+        connection.release();
+
+        if (queryErr) {
+          console.error('데이터 업데이트 중 에러 발생:', queryErr);
+          res.status(500).send('내부 서버 오류');
+        } else {
+          console.log('데이터가 업데이트되었습니다.');
+          res.send("<script>alert('문의사항이 업데이트되었습니다.'); location.href='/contactList'</script>");
         }
       });
     }
